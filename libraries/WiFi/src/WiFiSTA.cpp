@@ -84,6 +84,7 @@ static bool sta_config_equal(const wifi_config_t& lhs, const wifi_config_t& rhs)
 // ---------------------------------------------------- STA function -----------------------------------------------------
 // -----------------------------------------------------------------------------------------------------------------------
 
+bool WiFiSTAClass::_autoReconnect = true;
 bool WiFiSTAClass::_useStaticIp = false;
 wl_status_t WiFiSTAClass::_status = WL_NO_SHIELD;
 /**
@@ -140,6 +141,7 @@ wl_status_t WiFiSTAClass::begin(const char* ssid, const char *passphrase, int32_
         esp_wifi_set_channel(channel, WIFI_SECOND_CHAN_NONE);
     }
 
+    esp_wifi_start();
     if(connect) {
         esp_wifi_connect();
     }
@@ -201,6 +203,7 @@ bool WiFiSTAClass::config(IPAddress local_ip, IPAddress gateway, IPAddress subne
     if(!WiFi.enableSTA(true)) {
         return false;
     }
+    esp_wifi_start();
 
     tcpip_adapter_ip_info_t info;
     info.ip.addr = static_cast<uint32_t>(local_ip);
@@ -299,6 +302,17 @@ bool WiFiSTAClass::getAutoConnect()
     bool autoConnect;
     esp_wifi_get_auto_connect(&autoConnect);
     return autoConnect;
+}
+
+bool WiFiSTAClass::setAutoReconnect(bool autoReconnect)
+{
+    _autoReconnect = autoReconnect;
+    return true;
+}
+
+bool WiFiSTAClass::getAutoReconnect()
+{
+    return _autoReconnect;
 }
 
 /**
