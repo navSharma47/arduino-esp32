@@ -217,6 +217,7 @@ bool WiFiSTAClass::config(IPAddress local_ip, IPAddress gateway, IPAddress subne
         return false;
     }
     ip_addr_t d;
+    d.type = IPADDR_TYPE_V4;
 
     if(dns1 != (uint32_t)0x00000000) {
         // Set DNS1-Server
@@ -260,8 +261,9 @@ bool WiFiSTAClass::disconnect(bool wifioff)
     *conf.sta.password = 0;
 
     WiFi.getMode();
+    esp_wifi_start();
     esp_wifi_set_config(WIFI_IF_STA, &conf);
-    ret = esp_wifi_set_config(WIFI_IF_STA, &conf) == ESP_OK;
+    ret = esp_wifi_disconnect() == ESP_OK;
 
     if(wifioff) {
         WiFi.enableSTA(false);

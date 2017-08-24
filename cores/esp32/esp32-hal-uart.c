@@ -195,6 +195,13 @@ uart_t* uartBegin(uint8_t uart_nr, uint32_t baudrate, uint32_t config, int8_t rx
     uartSetBaudRate(uart, baudrate);
     UART_MUTEX_LOCK();
     uart->dev->conf0.val = config;
+    #define TWO_STOP_BITS_CONF 0x3
+    #define ONE_STOP_BITS_CONF 0x1
+
+    if ( uart->dev->conf0.stop_bit_num == TWO_STOP_BITS_CONF) {
+        uart->dev->conf0.stop_bit_num = ONE_STOP_BITS_CONF;
+        uart->dev->rs485_conf.dl1_en = 1;
+    }
     UART_MUTEX_UNLOCK();
 
     if(rxPin != -1) {
@@ -216,14 +223,18 @@ void uartEnd(uart_t* uart)
 
     UART_MUTEX_LOCK();
     if(uart->queue != NULL) {
+        uint8_t c;
+        while(xQueueReceive(uart->queue, &c, 0));
         vQueueDelete(uart->queue);
+        uart->queue = NULL;
     }
+
+    uart->dev->conf0.val = 0;
+
+    UART_MUTEX_UNLOCK();
 
     uartDetachRx(uart);
     uartDetachTx(uart);
-
-    uart->dev->conf0.val = 0;
-    UART_MUTEX_UNLOCK();
 }
 
 uint32_t uartAvailable(uart_t* uart)
@@ -410,4 +421,3 @@ int log_printf(const char *format, ...)
     }
     return len;
 }
-
