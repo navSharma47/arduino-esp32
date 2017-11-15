@@ -5,6 +5,7 @@ menu.FlashSize=Flash Size
 menu.DebugLevel=Core Debug Level
 
 
+
 ##############################################################
 
 lolin32.name=WEMOS LOLIN32
@@ -52,6 +53,8 @@ lolin32.menu.UploadSpeed.512000.upload.speed=512000
 
 lolin32_lite.name=WEMOS LOLIN32 Lite
 
+
+
 lolin32_lite.upload.tool=esptool
 lolin32_lite.upload.maximum_size=1310720
 lolin32_lite.upload.maximum_data_size=294912
@@ -80,4 +83,5 @@ lolin32_lite.menu.UploadSpeed.256000.windows=256000
 lolin32_lite.menu.UploadSpeed.256000.upload.speed=256000
 lolin32_lite.menu.UploadSpeed.115200=115200
 lolin32_lite.menu.UploadSpeed.115200.upload.speed=115200
+
 
